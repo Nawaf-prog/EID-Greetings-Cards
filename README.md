@@ -1,5 +1,4 @@
 # Customized Greeting Card Generator 🎉
-
 This project enables users to design and download personalized greeting cards for celebrations like Eid.
 
 ## Table of Contents
