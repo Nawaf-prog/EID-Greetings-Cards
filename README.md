@@ -23,3 +23,4 @@ This project enables users to design and download personalized greeting cards fo
 - **Icons**: [Font Awesome](https://fontawesome.com/) is used for social media icons.
 - **Images**: Images used for the design options are included in the `images` folder.
 
+To access the live demo, visit [https://eid-mubaraak.netlify.app/](https://eid-mubaraak.netlify.app/).
