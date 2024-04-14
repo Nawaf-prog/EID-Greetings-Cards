@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customize Your Card</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@450" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="script.js">
+    </link>
+
+</head>
+
+<body>
+
+    <div class="name-input">
+        <label for="name" class="amiri-regular">اكتب اسمك على الصورة</label>
+        <input type="text" id="name">
+    </div>
+    <button id="preview-btn">معاينة النص</button>
+    <canvas id="card-canvas" width="640" height="480"
+        style="border:1px solid #000; display: block; margin: 20px auto;"></canvas>
+    <button id="save-btn">احفظ الصورة</button>
+    <div id="balloon-container">
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const canvas = document.getElementById('card-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Retrieve parameters from the URL
+            const queryParams = new URLSearchParams(window.location.search);
+            const designName = queryParams.get('design');
+
+            const selectedDesign = designName ? `images/${designName}.jpg` : 'images/default.jpg';
+
+            // Draws the image and the name text on the canvas
+            function drawImageAndText(image) {
+                // Clear the canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Calculate the best fit size for the image
+                const scale = Math.min(canvas.width / image.width, canvas.height / image.height);
+                const x = (canvas.width / 2) - (image.width / 2) * scale;
+                const y = (canvas.height / 2) - (image.height / 2) * scale;
+                const width = image.width * scale;
+                const height = image.height * scale;
+
+                // Draw the image centered and scaled
+                ctx.drawImage(image, x, y, width, height);
+
+                // Add additional logic here for drawing the text
+                const name = document.getElementById('name').value;
+                ctx.font = '24px Markazi Text';
+                ctx.fillStyle = 'black';
+                ctx.textAlign = 'center';
+
+                // Update name positions based on URL parameters, or use default if not provided
+                let namePosX = queryParams.has('nameX') ? parseInt(queryParams.get('nameX'), 10) : 50;
+                let namePosY = queryParams.has('nameY') ? parseInt(queryParams.get('nameY'), 10) : 90;
+
+                // Calculate position based on percentages
+                const posX = (canvas.width * namePosX) / 100;
+                const posY = (canvas.height * namePosY) / 100;
+
+                ctx.fillText(name, posX, posY);
+            }
+
+            // Load the image based on the selected design
+            function loadImageAndText() {
+                const image = new Image();
+                image.onload = function () {
+                    drawImageAndText(this);
+                };
+                image.onerror = function () {
+                    console.error('Error loading the image:', selectedDesign);
+                };
+                image.src = selectedDesign;
+            }
+
+            // Initially load the image and text when the page is loaded
+            loadImageAndText();
+
+            // Re-draw the text when it changes
+            document.getElementById('name').addEventListener('input', loadImageAndText);
+
+            // Save button functionality
+            document.getElementById('save-btn').addEventListener('click', function () {
+                const link = document.createElement('a');
+                link.download = 'customized_card.png';
+                link.href = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'); // Force download
+                link.click();
+            });
+        });
+
+
+
+    </script>
+
+</body>
+
+
+</html>
